@@ -11,7 +11,6 @@ Want to see how to build this application? Check out the blog post [build a comm
   * [Spreadsheet setup](#spreadsheet-setup)
   * [Google credentials setup](#google-credentials-setup)
   * [Twilio Setup](#twilio-setup)
-    * [Twilio Serverless Toolkit](#twilio-serverless-toolkit)
     * [Twilio Functions UI](#twilio-functions-ui)
   * [You're ready](#youre-ready)
 * [LICENSE](#license)
@@ -35,7 +34,7 @@ We need to do a few things to use this app, including preparing credentials to m
 ### Google credentials setup
 
 - In the [Google developer console](https://console.developers.google.com/), create a new project.
-- Click _Enable API_. Search for and enable the **Google Drive API**
+- Click _Enable API_. Search for and enable the **Google Drive API** and **Google Sheets API**
 - _Create Credentials_ for a _Web Server_ to access _Application Data_
 - Name the service account and grant it a _Project Role_ of _Editor_
 - Download the JSON file of credentials and open it up
@@ -47,37 +46,6 @@ We need to do a few things to use this app, including preparing credentials to m
 
 You can deploy the Twilio Function for this application two ways, using the [Twilio Serverless Toolkit](#twilio-serverless-toolkit) or the [Twilio Functions UI](#twilio-functions-ui).
 
-#### Twilio Serverless Toolkit
-
-You will need [Node.js installed](https://nodejs.org/en/download/) to perform this method.
-
-- Clone this repo
-
-      git clone https://github.com/philnash/community-sms-broadcast.git
-
-- Change into the directory and install the dependencies
-
-      cd community-sms-broadcast
-      npm install
-
-- Copy the `.env.example` file to `.env`
-
-      cp .env.example .env
-
-- Fill in the `.env` file with your Twilio Account Sid and Auth Token (available in your [Twilio Console](https://www.twilio.com/console/))
-- Open your Google Spreadsheet and look at the URL bar, it should look like `https://docs.google.com/spreadsheets/d/{GOOGLE_SPREADSHEET_KEY}/edit#gid=0`. Take the string that represents your `GOOGLE_SPREADSHEET_KEY` and enter that into `.env`
-- Take the Google credentials JSON file you downloaded earlier and move it into the assets directory. Call it `assets/credentials.private.json`.
-- [optional] Open `functions/community-sms-broadcast.protected.js` and update the message assigned to `notOnTheListMessage` (this will be sent to anyone who sends a message to the number that is not on the spreadsheet)
-
-Now you should be ready to deploy.
-
-- Deploy the project to Twilio Functions
-
-      npm run deploy
-
-- This will give you a URL where your function is hosted
-- Copy the URL and enter it as the Messaging webhook for the phone number you bought earlier and save the number
-
 #### Twilio Functions UI
 
 - Open the [Twilio Functions admin console](https://www.twilio.com/console/functions/manage)
@@ -88,11 +56,9 @@ Now you should be ready to deploy.
 - Replace the code with the contents of `functions/community-sms-broadcast.protected.js` from this repo
 - [optional] In the code, update the message assigned to `notOnTheListMessage` (this will be sent to anyone who sends a message to the number that is not on the spreadsheet)
 - Save the Function
-- Open the [Twilio Functions Configuration console](https://www.twilio.com/console/functions/configure)
-- Check the box that says _Enable ACCOUNT_SID and AUTH_TOKEN_
-- From the Google credentials JSON file, find the client_email and private_key fields and add them as environment variables called `GOOGLE_SERVICE_ACCOUNT_EMAIL` and `GOOGLE_PRIVATE_KEY`
 - Take the Google credentials JSON file you downloaded earlier and upload it as a private asset called `credentials.json`.
 - Open your Google Spreadsheet and look at the URL bar, it should look like `https://docs.google.com/spreadsheets/d/{GOOGLE_SPREADSHEET_KEY}/edit#gid=0`. Take the string that represents your `GOOGLE_SPREADSHEET_KEY` and enter that as an environment variable called `GOOGLE_SPREADSHEET_KEY`
+- Check the box that says _Enable ACCOUNT_SID and AUTH_TOKEN_
 - In dependencies, enter `google-spreadsheet` with the version `3.0.10`
 - Save the configuration
 - Open your function again and find the full URL and path
